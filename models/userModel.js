@@ -8,21 +8,28 @@ const userSchema = mongoose.Schema(
       password: String,
     },
     info: {
+      username: String,
+      profilePicture: String,
       firstName: String,
       lastName: String,
       address: {
         adressNumber: Number,
         adressStreet: String,
+        postalCode: String,
+        city: String,
+        region: String,
         adressDetails: String,
       },
-      contactInfo: {
-        email: String,
-        phone: String,
-        hasSubscribed: Boolean,
-      },
+
     },
     wishlist: [],
-    orders: []
+    orders: [],
+    misc: {
+      isFirstTimeLogin: Boolean,
+      isVerified: Boolean,
+      verificationCode: String,
+      hasSubscribedNewsletter: String,
+    }
   },
   {
     timestamps: true,
