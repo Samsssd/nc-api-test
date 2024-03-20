@@ -9,6 +9,6 @@ router
 
 router
     .route("/login")
-    .post(protect, loginUser);
+    .post(loginUser);
 
 module.exports = router;
