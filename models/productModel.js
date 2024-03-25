@@ -9,6 +9,7 @@ const productSchema = mongoose.Schema(
     category: String,
     subCategory: String,
     assets: {
+      mainImage: String,
       square: [],
       vertical: [],
     },
@@ -23,6 +24,8 @@ const productSchema = mongoose.Schema(
       brand: [{ name: String, id: String, asset: String }],
       color: []
     },
+    stock : {},
+    delivery: {},
     additionalMedia : {
       mediaType: String,
       mediaUrl: String

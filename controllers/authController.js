@@ -56,6 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
       info: req.body.info,
       wishlist: [],
       orders: [],
+      notifications: [],
       misc: {
         isFirstTimeLogin: true,
         isVerified: false,

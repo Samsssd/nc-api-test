@@ -24,6 +24,7 @@ const userSchema = mongoose.Schema(
     },
     wishlist: [],
     orders: [],
+    notifications: [],
     misc: {
       isFirstTimeLogin: Boolean,
       isVerified: Boolean,
