@@ -1,8 +1,13 @@
 const express = require("express");
+const { createOrder, updateOrder } = require("../controllers/ordersController");
 const router = express.Router();
 
-router.route("/").get((req, res) => {
-  res.status(200).send("WALA ZEBI CA MARCHE");
-});
+router
+  .route("/create")
+  .post(createOrder)
+
+router
+  .route("/update")
+  .put(updateOrder)
 
 module.exports = router;

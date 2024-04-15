@@ -41,6 +41,12 @@ const productSchema = mongoose.Schema(
     reviews: {
       reviewsGrade: Number,
       allReviews: []
+    },
+    seller: {
+      name: String,
+      country: String,
+      isCertified: String,
+      imageLink: String
     }
   },
   {

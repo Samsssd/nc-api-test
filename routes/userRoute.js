@@ -1,5 +1,5 @@
 const express = require("express");
-const { addToWishlist, removeFromWishlist, getMyUserInfo, findUserInfo, updateMyUserInfo } = require("../controllers/userController");
+const { addToWishlist, removeFromWishlist, getMyUserInfo, findUserInfo, updateMyUserInfo, getMyWishlistProducts } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
@@ -14,6 +14,7 @@ router
 
 router
     .route("/wishlist/:productId")
+    .get(protect, getMyWishlistProducts)
     .post(protect, addToWishlist)
     .delete(protect, removeFromWishlist)
 

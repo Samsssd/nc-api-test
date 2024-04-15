@@ -30,12 +30,12 @@ const getProductInfo = asyncHandler(async (req, res) => {
         status: "error",
       });
     } else {
+      
       res.status(200).json(productExists);
     }
   } catch (err) {
     res.status(400).json({
-      message:
-        "Une erreur est survenue. Veuillez réessayer ultérieurement.",
+      message: "Une erreur est survenue. Veuillez réessayer ultérieurement.",
       status: "error",
     });
   }
@@ -43,14 +43,14 @@ const getProductInfo = asyncHandler(async (req, res) => {
 
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find()
-    if(products.length > 0) {
-      res.status(200).json(products)
+    const products = await Product.find();
+    if (products.length > 0) {
+      res.status(200).json(products);
     } else {
-      res.status(400).json({status: "error", message: "No products found."})
+      res.status(400).json({ status: "error", message: "No products found." });
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-})
+});
 module.exports = { addNewProduct, getProductInfo, getAllProducts };

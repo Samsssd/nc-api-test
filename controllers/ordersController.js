@@ -20,4 +20,19 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 })
 
-module.exports = {createOrder}
+const updateOrder = asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.orderId);
+
+  if (!order) {
+    res.status(400).json({message: "Impossible de trouver l'utilisateur."});
+  }
+
+  if (req.body.delivery.deliveryStatus) {
+    order.delivery.deliveryStatus = req.body.delivery.deliveryStatus;
+  }
+
+  await order.save()
+  res.status(200).json({message: "success"})
+})
+
+module.exports = {createOrder, updateOrder}
