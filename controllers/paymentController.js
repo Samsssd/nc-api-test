@@ -7,7 +7,7 @@ const DHL_PRICE_CODE = "price_1Ou3mPP4BVWfguzeetd2YV5b"
 
 const getStripeUrl = asyncHandler(async (req, res) => {
   let products = [];
-  let caca = 0;
+  let caca = 2;
   
   for (let i = 0; i < req.body.length; i++) {
     if (req.body[i] !== "dhl-delivery") {
