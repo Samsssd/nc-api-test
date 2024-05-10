@@ -90,15 +90,32 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const checkIfEmailIsUsed = asyncHandler(async (req, res) => {
   const email = await User.find({ "login.email": req.body.email });
-  if (email) {
-    res.status(400).json({
+  if (email.length > 0) {
+    res.status(200).json({
+      result: "error",
       message: "Cette adresse mail est déjà utilisée par un autre compte.",
     });
   } else {
     res.status(200).json({
-      message: "good to go",
+      result: "success",
+      message: "Cette adresse mail est disponible.",
     });
   }
 });
 
-module.exports = { loginUser, registerUser };
+const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
+  const email = await User.find({ "info.username": req.body.username });
+  if (email.length > 0) {
+    res.status(200).json({
+      result: "error",
+      message: "Ce nom d'utilisateur est déjà utilisé par un autre compte.",
+    });
+  } else {
+    res.status(200).json({
+      result: "success",
+      message: "Ce nom d'utilisateur est disponible.",
+    });
+  }
+});
+
+module.exports = { loginUser, registerUser, checkIfEmailIsUsed, checkIfUsernameIsUsed };

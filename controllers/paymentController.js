@@ -7,13 +7,14 @@ const DHL_PRICE_CODE = "price_1Ou3mPP4BVWfguzeetd2YV5b"
 
 const getStripeUrl = asyncHandler(async (req, res) => {
   let products = [];
-  let caca = 2;
   
   for (let i = 0; i < req.body.length; i++) {
-    if (req.body[i] !== "dhl-delivery") {
-      const item = await Product.findById(req.body[i]);
+    if (req.body[i].selectedDelivery !== "authenticated") {
+      const item = await Product.findById(req.body[i]._id);
       products.push({ price: item.stripeId, quantity: 1 });
     } else {
+      const item = await Product.findById(req.body[i]._id);
+      products.push({ price: item.stripeId, quantity: 1 });
       products.push({price: DHL_PRICE_CODE, quantity: 1})
     }
   }
