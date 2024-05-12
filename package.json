@@ -20,6 +20,7 @@
     "mongoose": "^8.0.3",
     "node-schedule": "^2.1.1",
     "nodemon": "^3.0.2",
+    "sib-api-v3-sdk": "^8.5.0",
     "stripe": "^14.20.0"
   }
 }

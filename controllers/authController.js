@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { sendTestEmail } = require("../middleware/emailMiddleware");
 
 //Générer un JWT
 const generateToken = (id) => {
@@ -46,7 +47,8 @@ const registerUser = asyncHandler(async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Generer Mot de passe de verification email
-    const emailPwd = Math.random().toString(36).slice(-8);
+    // const emailPwd = Math.random().toString(36).slice(-8);
+    const emailPwd = Math.floor(100000 + Math.random() * 900000)
 
     const user = await User.create({
       login: {
@@ -74,7 +76,7 @@ const registerUser = asyncHandler(async (req, res) => {
       //   text: `Votre Code est: ${emailPwd}`, // plain text body
       //   html: `<b>Votre Code est: ${emailPwd}</b>`, // html body
       // });
-
+      await sendTestEmail(1, user.login.email, user.info.firstName, user.info.firstName, user.misc.verificationCode)
       res.status(201).json({
         email: user.login.email,
         _id: user.id,

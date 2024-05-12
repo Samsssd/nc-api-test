@@ -1,5 +1,6 @@
 const express = require("express");
 const { getStripeUrl } = require("../controllers/paymentController");
+const { sendTestEmail, sendTestos } = require("../middleware/emailMiddleware");
 const router = express.Router();
 
 router.route("/").get((req, res) => {
@@ -9,5 +10,9 @@ router.route("/").get((req, res) => {
 router
     .route('/pay')
     .post(getStripeUrl)
+
+router
+    .route('/email')
+    .get(sendTestos)
 
 module.exports = router;
