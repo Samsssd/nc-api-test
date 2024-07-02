@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, loginUser, checkIfEmailIsUsed, checkIfUsernameIsUsed } = require("../controllers/authController");
+const { registerUser, loginUser, checkIfEmailIsUsed, checkIfUsernameIsUsed, changePassword } = require("../controllers/authController");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
@@ -10,6 +10,10 @@ router
 router
     .route("/login")
     .post(loginUser);
+
+router
+    .route("/password")
+    .put(protect, changePassword);
 
 router
     .route("/checkemail")

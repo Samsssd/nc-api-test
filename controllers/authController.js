@@ -90,6 +90,22 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+const changePassword = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+
+  //Comparer le mot de passe
+  if (await bcrypt.compare(req.body.oldPwd, user.login.password)) {
+    // Hash le nouveau mot de passe
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.newPwd, salt);
+    user.login.password = hashedPassword;
+    res.status(200).json({ message: "success" });
+    await user.save();
+  } else {
+    res.status(400).json({ message: "invalid password" });
+  }
+});
+
 const checkIfEmailIsUsed = asyncHandler(async (req, res) => {
   const email = await User.find({ "login.email": req.body.email });
   if (email.length > 0) {
@@ -120,4 +136,4 @@ const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { loginUser, registerUser, checkIfEmailIsUsed, checkIfUsernameIsUsed };
+module.exports = { loginUser, registerUser, changePassword, checkIfEmailIsUsed, checkIfUsernameIsUsed };
