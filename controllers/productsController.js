@@ -1,16 +1,21 @@
 const Product = require("../models/productModel");
 const asyncHandler = require("express-async-handler");
+const { getStripeProductId } = require("./paymentController");
 
 // CREATE PRODUCT, UPDATE/DELETE PRODUCTS, GET/FILTER (or do you put it client side????) PRODUCTS
-
+// https://ncproducts.s3.eu-west-3.amazonaws.com/nike-shoe-square.jpg
 const addNewProduct = asyncHandler(async (req, res) => {
   // INPUT VALIDATION
-  const product = await Product.create(req.body);
+  const product = await Product.create({...req.body, stripeId: ""});
   if (product) {
-    res.status(200).json({
-      id: product._id,
-      status: "success",
-    });
+    product.stripeId = await getStripeProductId(product.name, product.price * 100)
+    await product.save()
+    if(getStripeProductId(product.name, product.price * 100) !== null) {
+      res.status(200).json({
+        message: "success",
+        id: product._id,
+      });
+    }
   } else {
     res.status(400).json({
       message:
