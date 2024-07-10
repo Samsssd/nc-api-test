@@ -1,9 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 const Product = require("../models/productModel");
-const YOUR_DOMAIN = "https://192.0.0.2:3000/checkout";
+const YOUR_DOMAIN = "https://no-context.fr/checkout";
 const PRICE_ID = "pr_1234";
-const DHL_PRICE_CODE = "price_1Ou3mPP4BVWfguzeetd2YV5b"
+const AUTH_PRICE_CODE = "price_1PagqXRp8cIHQ7lF82QNizr3"
 
 const getStripeUrl = asyncHandler(async (req, res) => {
   let products = [];
@@ -15,7 +15,7 @@ const getStripeUrl = asyncHandler(async (req, res) => {
     } else {
       const item = await Product.findById(req.body[i]._id);
       products.push({ price: item.stripeId, quantity: 1 });
-      products.push({price: DHL_PRICE_CODE, quantity: 1})
+      products.push({price: AUTH_PRICE_CODE, quantity: 1})
     }
   }
   
@@ -36,18 +36,19 @@ const getStripeUrl = asyncHandler(async (req, res) => {
   res.status(200).json({ url: session.url });
 });
 
-const getStripeProductId = asyncHandler(async (productName, productPrice) => {
+const getStripeProductId = asyncHandler(async (req, res) => {
   const product = await stripe.products.create({
-    name: productName,
+    name: "Livraison Authentifiée",
     default_price_data: {
-      unit_amount: productPrice,
+      unit_amount: 1000,
       currency: 'eur',
     },
     expand: ['default_price'],
-    images: ["https://ncproducts.s3.eu-west-3.amazonaws.com/nike-shoe-square.jpg"],
+    // images: ["https://ncproducts.s3.eu-west-3.amazonaws.com/nike-shoe-square.jpg"],
   });
   if (product.default_price) {
-    return product.default_price.id
+    // return product.default_price.id
+    res.status(200).json({stripeId: product.default_price.id})
   } else {
     return null
   }
