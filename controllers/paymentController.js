@@ -36,22 +36,22 @@ const getStripeUrl = asyncHandler(async (req, res) => {
   res.status(200).json({ url: session.url });
 });
 
-const getStripeProductId = asyncHandler(async (req, res) => {
+const getStripeProductId = async (productName, productPrice, productImg) => {
   const product = await stripe.products.create({
-    name: "Livraison Authentifiée",
+    name: productName,
     default_price_data: {
-      unit_amount: 1000,
+      unit_amount: productPrice,
       currency: 'eur',
     },
     expand: ['default_price'],
-    // images: ["https://ncproducts.s3.eu-west-3.amazonaws.com/nike-shoe-square.jpg"],
+    images: [productImg],
   });
   if (product.default_price) {
-    // return product.default_price.id
-    res.status(200).json({stripeId: product.default_price.id})
+    return product.default_price.id
+    // res.status(200).json({stripeId: product.default_price.id})
   } else {
     return null
   }
-})
+}
 
 module.exports = { getStripeUrl, getStripeProductId };

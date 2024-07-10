@@ -8,7 +8,7 @@ const addNewProduct = asyncHandler(async (req, res) => {
   // INPUT VALIDATION
   const product = await Product.create({...req.body, stripeId: ""});
   if (product) {
-    product.stripeId = await getStripeProductId(product.name, product.price * 100)
+    product.stripeId = await getStripeProductId(product.name, product.price * 100, product.assets.mainImage)
     await product.save()
     if(getStripeProductId(product.name, product.price * 100) !== null) {
       res.status(200).json({
