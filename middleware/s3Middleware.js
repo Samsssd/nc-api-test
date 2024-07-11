@@ -33,7 +33,8 @@ const generateUploadURL = asyncHandler(async () => {
   // const imageName = rawBytes.toString("hex");
   // const imageName = "test-video-2"
   let mediaKey = new mongoose.Types.ObjectId();
-  mediaKey = mediaKey.toString();
+  mediaKey = mediaKey.toString(); 
+  const hehe = "gotcha"
 
   const params = {
     Bucket: bucketName,
