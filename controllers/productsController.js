@@ -48,7 +48,7 @@ const getProductInfo = asyncHandler(async (req, res) => {
 
 const getAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.aggregate([{ $sample: { size: await Product.countDocuments() } }]);
     if (products.length > 0) {
       res.status(200).json(products);
     } else {
