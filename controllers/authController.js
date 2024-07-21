@@ -136,4 +136,5 @@ const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
   }
 });
 
+
 module.exports = { loginUser, registerUser, changePassword, checkIfEmailIsUsed, checkIfUsernameIsUsed };
