@@ -9,9 +9,14 @@ apiKey.apiKey = process.env.BREVO_KEY;
 // var partnerKey = defaultClient.authentications['partner-key'];
 // partnerKey.apiKey = 'YOUR API KEY';
 
+
+
+
+
+
 var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
-var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
 const sendTestEmail = async (templateId, recipient, recipientName, nameParam, codeParam) => {
   sendSmtpEmail = {
