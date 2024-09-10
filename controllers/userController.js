@@ -24,7 +24,7 @@ const updateMyUserInfo = asyncHandler(async (req, res) => {
   }
 
   if (req.body.info.username) {
-    user.info.user = req.body.info.username;
+    user.info.username = req.body.info.username;
   }
   if (req.body.info.profilePicture) {
     user.info.profilePicture = req.body.info.profilePicture;
