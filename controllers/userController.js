@@ -86,6 +86,15 @@ const updateMyUserInfo = asyncHandler(async (req, res) => {
       if (req.body.misc.verificationCode) user.misc.verificationCode = req.body.misc.verificationCode;
     }
 
+    // Update mySize information
+    if (req.body.mySize) {
+      ['tops', 'bottoms', 'dresses', 'shoes'].forEach(category => {
+        if (Array.isArray(req.body.mySize[category])) {
+          user.mySize[category] = req.body.mySize[category];
+        }
+      });
+    }
+
     await user.save();
     res.status(200).json({ message: "Informations utilisateur mises à jour avec succès.", user: user });
   } catch (error) {
@@ -203,6 +212,8 @@ const getMyWishlistProducts = asyncHandler(async (req, res) => {
     res.status(400);
   }
 });
+
+
 
 module.exports = {
   getMyUserInfo,

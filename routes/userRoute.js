@@ -1,5 +1,5 @@
 const express = require("express");
-const { addToWishlist, removeFromWishlist, getMyUserInfo, findUserInfo, updateMyUserInfo, getMyWishlistProducts } = require("../controllers/userController");
+const { addToWishlist, removeFromWishlist, getMyUserInfo, findUserInfo, updateMyUserInfo, getMyWishlistProducts, updateAllUsersWithMySize } = require("../controllers/userController");
 const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
@@ -17,7 +17,6 @@ router
     .get(protect, getMyWishlistProducts)
     .post(protect, addToWishlist)
     .delete(protect, removeFromWishlist)
-
 
 
 module.exports = router;

@@ -20,7 +20,12 @@ const userSchema = mongoose.Schema(
         region: String,
         adressDetails: String,
       },
-
+    },
+    mySize: {
+      tops: [String],
+      bottoms: [String],
+      dresses: [String],
+      shoes: [String],
     },
     wishlist: [],
     orders: [],
