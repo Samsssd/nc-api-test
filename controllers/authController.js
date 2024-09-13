@@ -4,13 +4,22 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { sendTestEmail } = require("../middleware/emailMiddleware");
 
-//Générer un JWT
+/**
+ * @desc    Generate JWT token
+ * @param   {string} id - User ID
+ * @returns {string} JWT token
+ */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "60d",
   });
 };
 
+/**
+ * @desc    Authenticate user & get token
+ * @route   POST /api/v1/auth/login
+ * @access  Public
+ */
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   //Chercher par email
@@ -24,6 +33,11 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Register a new user
+ * @route   POST /api/v1/auth/register
+ * @access  Public
+ */
 const registerUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body.login;
 
@@ -90,6 +104,11 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Change user password
+ * @route   PUT /api/v1/auth/password
+ * @access  Private
+ */
 const changePassword = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
 
@@ -106,6 +125,11 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Check if email is already in use
+ * @route   POST /api/v1/auth/checkemail
+ * @access  Public
+ */
 const checkIfEmailIsUsed = asyncHandler(async (req, res) => {
   const email = await User.find({ "login.email": req.body.email });
   if (email.length > 0) {
@@ -121,6 +145,11 @@ const checkIfEmailIsUsed = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Check if username is already in use
+ * @route   POST /api/v1/auth/checkusername
+ * @access  Public
+ */
 const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
   const email = await User.find({ "info.username": req.body.username });
   if (email.length > 0) {
@@ -135,6 +164,5 @@ const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
     });
   }
 });
-
 
 module.exports = { loginUser, registerUser, changePassword, checkIfEmailIsUsed, checkIfUsernameIsUsed };
