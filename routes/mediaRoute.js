@@ -10,7 +10,7 @@ router
 
 router
     .route('/get-upload-url')
-    .get(protect, getUploadURL)
+    .get(getUploadURL)
 
 router
     .route('/upload/story')

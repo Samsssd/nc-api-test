@@ -26,17 +26,31 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter });
 
-
+/**
+ * @desc    Get a pre-signed URL for uploading media
+ * @route   GET /api/v1/media/get-upload-url
+ * @access  Public
+ */
 const getUploadURL = asyncHandler(async (req, res) => {
   const info = await generateUploadURL();
   res.json({ url: info.uploadURL, mediaKey: info.mediaKey });
 });
 
+/**
+ * @desc    Get a signed URL for viewing media
+ * @route   GET /api/v1/media/view
+ * @access  Private
+ */
 const getViewURL = asyncHandler(async (req, res) => {
   const url = await getSignedViewURL(req.body.mediaKey);
   res.status(200).json({ url });
 });
 
+/**
+ * @desc    Delete media from S3
+ * @route   DELETE /api/v1/media/delete/:id
+ * @access  Private
+ */
 const deleteMedia = asyncHandler(async (req, res) => {
   try {
     await deleteS3Object(req.params.id);
@@ -47,6 +61,11 @@ const deleteMedia = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Upload media to S3
+ * @route   POST /api/v1/media/upload
+ * @access  Private
+ */
 const uploadMedia = asyncHandler(async (req, res) => {
   let file = req.file;
   let fileType = file.mimetype;
@@ -75,6 +94,11 @@ const uploadMedia = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Upload story media to S3
+ * @route   POST /api/v1/media/upload/story
+ * @access  Private
+ */
 const uploadStoryMedia = asyncHandler(async (req, res) => {
   let file = req.file;
   let fileType = file.mimetype;

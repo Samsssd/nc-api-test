@@ -35,6 +35,7 @@ const userSchema = mongoose.Schema(
       isVerified: Boolean,
       verificationCode: String,
       hasSubscribedNewsletter: String,
+      recentlyViewed: [String], // Added recentlyViewed array
     }
   },
   {
