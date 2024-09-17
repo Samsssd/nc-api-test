@@ -53,6 +53,54 @@ const getProductInfo = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Update a product
+ * @route   PUT /api/v1/products/:productId
+ * @access  Private/Seller
+ */
+const updateProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.productId);
+
+  if (!product) {
+    return res.status(404).json({ message: "Produit non trouvé." });
+  }
+
+  // Check if the logged-in seller owns this product
+  if (product.sellerId.toString() !== req.user.id) {
+    return res.status(403).json({ message: "Non autorisé à modifier ce produit." });
+  }
+
+  const updatedProduct = await Product.findByIdAndUpdate(
+    req.params.productId,
+    req.body,
+    { new: true, runValidators: true }
+  );
+
+  res.status(200).json(updatedProduct);
+});
+
+/**
+ * @desc    Delete a product
+ * @route   DELETE /api/v1/products/:productId
+ * @access  Private/Seller
+ */
+const deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.productId);
+
+  if (!product) {
+    return res.status(404).json({ message: "Produit non trouvé." });
+  }
+
+  // Check if the logged-in seller owns this product
+  if (product.sellerId.toString() !== req.user.id) {
+    return res.status(403).json({ message: "Non autorisé à supprimer ce produit." });
+  }
+
+  await product.remove();
+
+  res.status(200).json({ message: "Produit supprimé avec succès." });
+});
+
+/**
  * @desc    Get all products (randomly ordered)
  * @route   GET /api/v1/products
  * @access  Public
@@ -223,6 +271,8 @@ const deleteRecentProducts = asyncHandler(async (req, res) => {
 module.exports = {
   addNewProduct,
   getProductInfo,
+  updateProduct,
+  deleteProduct,
   getAllProducts,
   getProductsByCategory,
   getProductsBySubcategory,

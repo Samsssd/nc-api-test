@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Seller = require("../models/sellerModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -16,20 +17,40 @@ const generateToken = (id) => {
 };
 
 /**
- * @desc    Authenticate user & get token
+ * @desc    Authenticate user or seller & get token
  * @route   POST /api/v1/auth/login
  * @access  Public
  */
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  //Chercher par email
+
+  // Check for user
   const user = await User.findOne({ "login.email": email });
-  //Comparer le mot de passe
+
+  // Check for seller if user not found
+  const seller = user
+    ? null
+    : await Seller.findOne({ "generalInfo.email": email });
+
   if (user && (await bcrypt.compare(password, user.login.password))) {
     const token = generateToken(user._id);
-    res.status(201).json({ token: token });
+    res.status(200).json({
+      token: token,
+      userType: "user",
+      userId: user._id,
+    });
+  } else if (
+    seller &&
+    (await bcrypt.compare(password, seller.loginInfo.password))
+  ) {
+    const token = generateToken(seller._id);
+    res.status(200).json({
+      token: token,
+      userType: "seller",
+      userId: seller._id,
+    });
   } else {
-    res.status(400).json({ message: `Email ou mot de passe incorrects.` });
+    res.status(401).json({ message: "Email ou mot de passe incorrects." });
   }
 });
 
@@ -48,7 +69,9 @@ const registerUser = asyncHandler(async (req, res) => {
       message: "Cette adresse mail est déjà utilisée par un autre compte.",
     });
   }
-  const usernameExists = await User.findOne({ "info.username": req.body.info.username });
+  const usernameExists = await User.findOne({
+    "info.username": req.body.info.username,
+  });
   if (usernameExists) {
     res.status(400).json({
       message: "Ce nom d'utilisateur est déjà utilisé par un autre compte.",
@@ -62,7 +85,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // Generer Mot de passe de verification email
     // const emailPwd = Math.random().toString(36).slice(-8);
-    const emailPwd = Math.floor(100000 + Math.random() * 900000)
+    const emailPwd = Math.floor(100000 + Math.random() * 900000);
 
     const user = await User.create({
       login: {
@@ -77,7 +100,7 @@ const registerUser = asyncHandler(async (req, res) => {
         isFirstTimeLogin: true,
         isVerified: false,
         verificationCode: emailPwd,
-        hasSubscribedNewsletter: req.body.misc.hasSubscribedNewsletter
+        hasSubscribedNewsletter: req.body.misc.hasSubscribedNewsletter,
       },
     });
 
@@ -90,7 +113,13 @@ const registerUser = asyncHandler(async (req, res) => {
       //   text: `Votre Code est: ${emailPwd}`, // plain text body
       //   html: `<b>Votre Code est: ${emailPwd}</b>`, // html body
       // });
-      await sendTestEmail(1, user.login.email, user.info.firstName, user.info.firstName, user.misc.verificationCode)
+      await sendTestEmail(
+        1,
+        user.login.email,
+        user.info.firstName,
+        user.info.firstName,
+        user.misc.verificationCode
+      );
       res.status(201).json({
         email: user.login.email,
         _id: user.id,
@@ -101,6 +130,80 @@ const registerUser = asyncHandler(async (req, res) => {
         message: "Une erreur est survenue. Impossible de créer le compte.",
       });
     }
+  }
+});
+
+/**
+ * @desc    Register a new seller
+ * @route   POST /api/v1/auth/register-seller
+ * @access  Public
+ */
+const registerSeller = asyncHandler(async (req, res) => {
+  const { email, password } = req.body.loginInfo;
+
+  // Check if the email is already used
+  const emailExists = await Seller.findOne({ "generalInfo.email": email });
+  if (emailExists) {
+    return res.status(400).json({
+      message:
+        "Cette adresse mail est déjà utilisée par un autre compte vendeur.",
+    });
+  }
+
+  // Check if the username is already used
+  const usernameExists = await Seller.findOne({
+    "generalInfo.username": req.body.generalInfo.username,
+  });
+  if (usernameExists) {
+    return res.status(400).json({
+      message:
+        "Ce nom d'utilisateur est déjà utilisé par un autre compte vendeur.",
+    });
+  }
+
+  // Hash the password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Generate email verification code
+  const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
+
+  const seller = await Seller.create({
+    loginInfo: {
+      password: hashedPassword,
+    },
+    generalInfo: {
+      ...req.body.generalInfo,
+      email: email,
+    },
+    address: req.body.address,
+    preferredCategories: req.body.preferredCategories || [],
+    shippingMethods: req.body.shippingMethods || [],
+    returnPolicy: req.body.returnPolicy || "",
+    isVerified: false,
+    verificationCode: emailVerificationCode,
+  });
+
+  if (seller) {
+    // Send verification email
+    await sendTestEmail(
+      2,
+      seller.generalInfo.email,
+      seller.generalInfo.businessName,
+      seller.generalInfo.username,
+      emailVerificationCode
+    );
+
+    res.status(201).json({
+      email: seller.generalInfo.email,
+      _id: seller.id,
+      token: generateToken(seller._id),
+    });
+  } else {
+    res.status(400).json({
+      message:
+        "Une erreur est survenue. Impossible de créer le compte vendeur.",
+    });
   }
 });
 
@@ -165,4 +268,11 @@ const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { loginUser, registerUser, changePassword, checkIfEmailIsUsed, checkIfUsernameIsUsed };
+module.exports = {
+  loginUser,
+  registerUser,
+  changePassword,
+  checkIfEmailIsUsed,
+  checkIfUsernameIsUsed,
+  registerSeller,
+};
