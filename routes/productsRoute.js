@@ -20,7 +20,7 @@ const router = express.Router();
 router.route("/").get(getAllProducts);
 router.route("/post").post(addNewProduct);
 router
-  .route("/:productId")
+  .route("/edit/:productId")
   .put(protect, updateProduct)
   .delete(protect, deleteProduct);
 router.route("/info/:productId").get(getProductInfo);

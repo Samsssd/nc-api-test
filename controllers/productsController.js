@@ -54,7 +54,7 @@ const getProductInfo = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Update a product
- * @route   PUT /api/v1/products/:productId
+ * @route   PUT /api/v1/products/edit/:productId
  * @access  Private/Seller
  */
 const updateProduct = asyncHandler(async (req, res) => {
@@ -80,7 +80,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 /**
  * @desc    Delete a product
- * @route   DELETE /api/v1/products/:productId
+ * @route   DELETE /api/v1/products/edit/:productId
  * @access  Private/Seller
  */
 const deleteProduct = asyncHandler(async (req, res) => {
