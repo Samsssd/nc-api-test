@@ -1,13 +1,16 @@
 const express = require("express");
-const { createOrder, updateOrder } = require("../controllers/ordersController");
+const { createOrder, updateOrder, deleteOrder, getMyOrders } = require("../controllers/ordersController");
+const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
-router
-  .route("/create")
-  .post(createOrder)
+router.route("/")
+  .post(createOrder);
 
-router
-  .route("/update")
+router.route("/my-orders")
+  .get(protect, getMyOrders);
+
+router.route("/:orderId")
   .put(updateOrder)
+  .delete(deleteOrder);
 
 module.exports = router;

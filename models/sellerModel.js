@@ -31,6 +31,7 @@ const sellerSchema = mongoose.Schema(
         default: 0,
       },
     },
+    reviews: [],
     isVerified: {
       type: Boolean,
       default: false,

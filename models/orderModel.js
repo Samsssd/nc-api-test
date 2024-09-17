@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const orderSchema = mongoose.Schema(
   {
     orderState: String, // placed, expedited, delivered, success, issue (WILL NEED CRON JOB AFTER 14x DAYS)
+    orderCode: String,
     customerId: String,
+    sellerId: String,
+    paymentStatus: String,
     content: [], //LIST OF PRODUCTS IDs to fetch later (or keep minimal info so as not to ping db too much)
     customer: {
       firstName: String,
