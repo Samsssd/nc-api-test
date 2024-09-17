@@ -204,6 +204,22 @@ const searchProductsWithFilters = asyncHandler(async (req, res) => {
   res.status(200).json(products);
 });
 
+const deleteRecentProducts = asyncHandler(async (req, res) => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  try {
+    const result = await Product.deleteMany({ createdAt: { $gte: yesterday } });
+    res.status(200).json({
+      message: `Successfully deleted ${result.deletedCount} products created since yesterday.`,
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.error('Error deleting recent products:', error);
+    res.status(500).json({ message: "An error occurred while deleting recent products." });
+  }
+});
+
 module.exports = {
   addNewProduct,
   getProductInfo,
@@ -215,5 +231,6 @@ module.exports = {
   getMostPopularProducts,
   getMostViewedProducts,
   getProductRecommendations,
-  searchProductsWithFilters
+  searchProductsWithFilters,
+  deleteRecentProducts
 };
