@@ -234,8 +234,10 @@ const changePassword = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const checkIfEmailIsUsed = asyncHandler(async (req, res) => {
-  const email = await User.find({ "login.email": req.body.email });
-  if (email.length > 0) {
+  const userEmail = await User.findOne({ "login.email": req.body.email });
+  const sellerEmail = await Seller.findOne({ "generalInfo.email": req.body.email });
+
+  if (userEmail || sellerEmail) {
     res.status(200).json({
       result: "error",
       message: "Cette adresse mail est déjà utilisée par un autre compte.",
@@ -254,8 +256,10 @@ const checkIfEmailIsUsed = asyncHandler(async (req, res) => {
  * @access  Public
  */
 const checkIfUsernameIsUsed = asyncHandler(async (req, res) => {
-  const email = await User.find({ "info.username": req.body.username });
-  if (email.length > 0) {
+  const userUsername = await User.findOne({ "info.username": req.body.username });
+  const sellerUsername = await Seller.findOne({ "generalInfo.username": req.body.username });
+
+  if (userUsername || sellerUsername) {
     res.status(200).json({
       result: "error",
       message: "Ce nom d'utilisateur est déjà utilisé par un autre compte.",
